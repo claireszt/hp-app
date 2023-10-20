@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Button } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Import the desired icon library
+
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';

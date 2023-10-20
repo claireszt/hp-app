@@ -5,7 +5,7 @@ const CurrentStyle = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 30,
         textAlign: 'center',
-        padding: 10,
+        padding: 20,
         marginTop: 10,
         marginBottom: 10
     },

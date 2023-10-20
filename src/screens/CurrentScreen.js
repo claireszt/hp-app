@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, Button, ActivityIndicator, Pressable } from 'react-native';
+import { View, Text, Image, Button, ActivityIndicator } from 'react-native';
+
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import { supabase } from '../supabaseConfig.js';
 
 import CurrentStyle from '../style/CurrentScreen.js'
 import Img from '../utils/images.js'
+
+import ProgressBar from '../components/progressBar.js';
 
 function CurrentScreen() {
   const [currentBook, setCurrentBook] = useState(null);
@@ -14,13 +18,13 @@ function CurrentScreen() {
   const [updateFlag, setUpdateFlag] = useState(false);
 
   useEffect(() => {
-    // Obtenir le livre actuellement écouté depuis Supabase
+
     async function fetchCurrentInfo() {
       const { data, error } = await supabase
         .from('history')
-        .select('book(name, img, color), chapter(title, num, id)')
+        .select('book(id, name, img, color), chapter(title, num, id)')
         .order('chapter', { ascending: true })
-        .is('listen2023', null)
+        .is('listen-test', null)
         .limit(2);
       if (error) {
         console.error('Error fetching the currently listening book:', error);
@@ -30,7 +34,9 @@ function CurrentScreen() {
         setNextChapter(data[1].chapter);
       }
     }
+
     fetchCurrentInfo();
+
   }, [updateFlag]);
 
   const markChapterAsListened = async () => {
@@ -40,14 +46,12 @@ function CurrentScreen() {
       if (chapterId) {
         const { updateError } = await supabase
           .from('history')
-          .update({ listen2023: new Date() })
+          .update({ 'listen-test': new Date() })
           .eq('chapter', chapterId);
         if (updateError) {
           console.error('Error updating the chapter:', updateError);
         } else {
-                    // Réinitialisez le drapeau de mise à jour à false pour permettre de futurs re-renders
                     setUpdateFlag(false);
-                    // Forcez un re-render en mettant le drapeau à true
                     setUpdateFlag(true);
                   }
       } else {
@@ -69,7 +73,10 @@ function CurrentScreen() {
         <ActivityIndicator size="large" color="black" />
       ) : (
         <>
-          <BookInfo currentBook={currentBook} />
+          <BookInfo
+            currentBook={currentBook}
+            updateFlag={updateFlag}
+          />
           <ChapterInfo
             currentChapter={currentChapter}
             nextChapter={nextChapter}
@@ -85,25 +92,46 @@ function CurrentScreen() {
 
 export default CurrentScreen;
 
-function BookInfo({ currentBook }) {
+function BookInfo({ currentBook, updateFlag }) {
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-    <Text style={CurrentStyle.title}>{currentBook.name}</Text>
-            <Image source={Img[currentBook.img]} style={CurrentStyle.bookImg} />
+      <View style={{ width: 300 }}><Text style={CurrentStyle.title}>{currentBook.name}</Text></View>
+      <Image source={Img[currentBook.img]} style={CurrentStyle.bookImg} />
+      <ProgressBar currentBook={currentBook} updateFlag={updateFlag} />
     </View>
   );
 }
 
 function ChapterInfo({ currentChapter, nextChapter, markChapterAsListened, currentBook, nextBook }) {
   return (
-    <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 50, gap: 10}}>
-          <Text style={{ fontSize: 20 }}>Chapter {currentChapter.num}: {currentChapter.title}</Text>
-          <Button
-        color={currentBook.color}
-        title={nextBook ? 'Next Book' : 'Listened'}
-        onPress={markChapterAsListened}
-      />
-      {nextBook ? null : <Text style={{ color: '#A6A6B3' }}>Next chapter: {nextChapter.title}</Text>}
+    <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 25, gap: 10}}>
+          <View style={{ width: 300 }}><Text style={{ fontSize: 20, textAlign: 'center' }}>Chapter {currentChapter.num}: {currentChapter.title}</Text></View>
+          {nextBook ? 
+            (<Icon.Button
+              name="book"
+              backgroundColor={currentBook.color}
+              onPress={markChapterAsListened}
+              borderRadius={50}
+              size={20}
+              padding={10}>
+                NEXT BOOK
+          </Icon.Button>)
+          : (
+            <Icon.Button
+              name="headphones-alt"
+              backgroundColor={currentBook.color}
+              onPress={markChapterAsListened}
+              borderRadius={50}
+              size={20}
+              padding={10}>
+                LISTENED
+          </Icon.Button>
+          )
+
+          }
+
+      {nextBook ? null : <View style={{ width: 200 }}><Text style={{ color: '#A6A6B3', textAlign: 'center' }}>Next chapter:</Text>
+      <Text style={{ color: '#A6A6B3', textAlign: 'center' }}>{nextChapter.title}</Text></View>}
     </View>
   );
 }
