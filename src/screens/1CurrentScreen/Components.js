@@ -14,7 +14,7 @@ export function BookInfo({ currentBook, updateFlag }) {
       <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 50}}>
         <Text style={CurrentStyle.title}>{currentBook.name}</Text>
         <Image source={Img[currentBook.img]} style={CurrentStyle.bookImg} />
-        <ProgressBarComp currentBook={currentBook} updateFlag={updateFlag} />
+        <ProgressBarComp currentBook={currentBook} updateFlag={updateFlag} textType='chapters' />
       </View>
     );
   }

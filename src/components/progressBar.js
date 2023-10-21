@@ -24,7 +24,7 @@ function calcPercent(chaptersData) {
   return percentageListened;
 }
 
-function ProgressBarComp({ currentBook, updateFlag }) {
+function ProgressBarComp({ currentBook, updateFlag, textType }) {
   const [allChapters, setAllChapters] = useState([]);
 
   useEffect(() => {
@@ -52,9 +52,12 @@ function ProgressBarComp({ currentBook, updateFlag }) {
     <View>
       {allChapters ? (
         <View style={{ marginTop: 10, alignItems: 'center' }}>
-          <ProgressBar theme={{ colors: { surfaceVariant: '#DCDCDC' } }} progress={0.5} color={currentBook.color} width={300} borderRadius={0}/>
-          {chapterStats.remainingChapters == 1 ? <Text>last chapter</Text> : <Text>{chapterStats.remainingChapters} chapters remaining</Text>}
-        </View>
+          {/* <ProgressBar theme={{ colors: { surfaceVariant: '#DCDCDC' } }} progress={percent} color={currentBook.color} width={300} borderRadius={0}/> */}
+          {textType == 'chapters' ? 
+            chapterStats.remainingChapters == 1 ? <Text>last chapter</Text> : <Text>{chapterStats.remainingChapters} chapters remaining</Text>
+          : (<Text>{(percent *100).toFixed(0)} %</Text>)
+          }
+          </View>
       ) : (
         <View></View>
       )}

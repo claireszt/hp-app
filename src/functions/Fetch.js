@@ -3,7 +3,7 @@ import { supabase } from '../supabaseConfig.js';
 export async function fetchCurrentData() {
   const { data, error } = await supabase
     .from('history')
-    .select('book(id, name, img, color, color-hsl), chapter(title, num, id)')
+    .select('book(id, name, img, color), chapter(title, num, id)')
     .order('chapter', { ascending: true })
     .is('listen-test', null)
     .limit(2);
