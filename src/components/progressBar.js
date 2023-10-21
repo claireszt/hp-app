@@ -51,7 +51,7 @@ function ProgressBar({ currentBook, updateFlag }) {
     <View>
       {allChapters ? (
         <View style={{ marginTop: 10, alignItems: 'center' }}>
-          <Progress.Bar progress={percent} width={300} color={currentBook.color} unfilledColor='#E0E0E0' borderWidth={0} />
+          {/* <Progress.Bar progress={percent} width={300} color={currentBook.color} unfilledColor='#E0E0E0' borderWidth={0} /> */}
           {chapterStats.remainingChapters == 1 ? <Text>last chapter</Text> : <Text>{chapterStats.remainingChapters} chapters remaining</Text>}
         </View>
       ) : (

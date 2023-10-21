@@ -6,8 +6,6 @@ const CurrentStyle = StyleSheet.create({
         fontSize: 30,
         textAlign: 'center',
         padding: 20,
-        marginTop: 10,
-        marginBottom: 10
     },
     currentChapt: {
         alignItems: 'center',
