@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
-import * as Progress from 'react-native-progress';
 import { supabase } from '../supabaseConfig.js';
+
+import { ProgressBar } from 'react-native-paper';
 
 function calculateChapterStats(chaptersData) {
   const totalChapters = chaptersData.length;
@@ -23,7 +24,7 @@ function calcPercent(chaptersData) {
   return percentageListened;
 }
 
-function ProgressBar({ currentBook, updateFlag }) {
+function ProgressBarComp({ currentBook, updateFlag }) {
   const [allChapters, setAllChapters] = useState([]);
 
   useEffect(() => {
@@ -51,7 +52,7 @@ function ProgressBar({ currentBook, updateFlag }) {
     <View>
       {allChapters ? (
         <View style={{ marginTop: 10, alignItems: 'center' }}>
-          {/* <Progress.Bar progress={percent} width={300} color={currentBook.color} unfilledColor='#E0E0E0' borderWidth={0} /> */}
+          <ProgressBar theme={{ colors: { surfaceVariant: '#DCDCDC' } }} progress={0.5} color={currentBook.color} width={300} borderRadius={0}/>
           {chapterStats.remainingChapters == 1 ? <Text>last chapter</Text> : <Text>{chapterStats.remainingChapters} chapters remaining</Text>}
         </View>
       ) : (
@@ -61,4 +62,4 @@ function ProgressBar({ currentBook, updateFlag }) {
   );
 }
 
-export default ProgressBar;
+export default ProgressBarComp;

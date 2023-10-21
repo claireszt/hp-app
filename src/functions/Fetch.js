@@ -3,7 +3,7 @@ import { supabase } from '../supabaseConfig.js';
 export async function fetchCurrentData() {
   const { data, error } = await supabase
     .from('history')
-    .select('book(id, name, img, color), chapter(title, num, id)')
+    .select('book(id, name, img, color, color-hsl), chapter(title, num, id)')
     .order('chapter', { ascending: true })
     .is('listen-test', null)
     .limit(2);
@@ -23,16 +23,3 @@ export async function fetchCurrentData() {
   return { currentBook: null, currentChapter: null, nextChapter: null };
 }
 
-export async function markChapterAsListened(chapterId) {
-  if (chapterId) {
-    const { updateError } = await supabase
-      .from('history')
-      .update({ 'listen-test': new Date() })
-      .eq('chapter', chapterId);
-    if (updateError) {
-      console.error('Error updating the chapter:', updateError);
-    }
-  } else {
-    console.error('Chapter ID is not valid.');
-  }
-}

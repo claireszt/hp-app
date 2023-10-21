@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View } from 'react-native';
 
 // CURRENT SCREEN
 import { BookInfo, ChapterInfo } from './Components.js';
 
 // STYLE
 import CurrentStyle from './Style.js'
+import { ActivityIndicator, MD2Colors } from 'react-native-paper';
 
 // FUNCTIONS
 import { fetchCurrentData } from '../../functions/Fetch.js'; 
+import { markChapterAsListened } from '../../functions/Update.js';
 
 
 function CurrentScreen() {
   const [currentBook, setCurrentBook] = useState(null);
   const [currentChapter, setCurrentChapter] = useState(null);
   const [nextChapter, setNextChapter] = useState(null);
-  const [updateFlag, setUpdateFlag] = useState(false);
+  const [updateFlag, setUpdateFlag] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
@@ -28,11 +30,10 @@ function CurrentScreen() {
     fetchData();
   }, [updateFlag]);
 
-  const markChapterAsListened = async () => {
+  const chaptBtn = async () => {
     if (currentChapter) {
       markChapterAsListened(currentChapter.id); 
-      setUpdateFlag(false);
-      setUpdateFlag(true);
+      setUpdateFlag(!updateFlag)
     }
   }
 
@@ -41,14 +42,14 @@ function CurrentScreen() {
   return (
     <View style={CurrentStyle.container}>
       {isLoading ? (
-        <ActivityIndicator size="large" color="black" />
+        <ActivityIndicator animating={true} color={'black'} />
       ) : (
         <>
           <BookInfo currentBook={currentBook} updateFlag={updateFlag} />
           <ChapterInfo
             currentChapter={currentChapter}
             nextChapter={nextChapter}
-            markChapterAsListened={markChapterAsListened}
+            markChapterAsListened={chaptBtn}
             currentBook={currentBook}
           />
         </>

@@ -2,8 +2,10 @@ import React from "react";
 import { View, Text, Image } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { Button } from 'react-native-paper';
+
 import Img from '../../utils/images.js'
-import ProgressBar from '../../components/progressBar.js';
+import ProgressBarComp from '../../components/progressBar.js';
 
 import CurrentStyle from './Style.js'
 
@@ -12,7 +14,7 @@ export function BookInfo({ currentBook, updateFlag }) {
       <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 50}}>
         <Text style={CurrentStyle.title}>{currentBook.name}</Text>
         <Image source={Img[currentBook.img]} style={CurrentStyle.bookImg} />
-        <ProgressBar currentBook={currentBook} updateFlag={updateFlag} />
+        <ProgressBarComp currentBook={currentBook} updateFlag={updateFlag} />
       </View>
     );
   }
@@ -29,29 +31,25 @@ export function ChapterInfo({ currentChapter, nextChapter, markChapterAsListened
             {nextBook ? 
               (<Icon.Button
                 name="book"
-                backgroundColor={currentBook.color}
+                mode="outlined"
                 onPress={markChapterAsListened}
-                borderRadius={50}
-                size={20}
-                padding={10}
-                paddingLeft={20}
-                paddingRight={20}
+                textColor={currentBook.color}
+                uppercase={true}
+                theme={{ colors: { outline: currentBook.color } }}
                 >
                   NEXT BOOK
             </Icon.Button>)
-            : (
-              <Icon.Button
-                name="headphones-alt"
-                backgroundColor={currentBook.color}
+            : ( 
+              <Button
+                icon="headphones"
+                mode="outlined"
                 onPress={markChapterAsListened}
-                borderRadius={50}
-                size={20}
-                padding={10}
-                paddingLeft={20}
-                paddingRight={20}
-                >
-                  LISTENED
-            </Icon.Button>
+                textColor={currentBook.color}
+                uppercase={true}
+                theme={{ colors: { outline: currentBook.color } }}
+              >
+                LISTENED
+              </Button>
             )
   
             }
