@@ -45,14 +45,19 @@ function ProgressBarComp({ currentBook, updateFlag, textType }) {
     fetchAllBookChapters();
   }, [updateFlag]);
 
+
+
   const chapterStats = calculateChapterStats(allChapters);
   const percent = calcPercent(allChapters);
+
+  let num = 0
+  if (currentBook) { num = percent}
 
   return (
     <View>
       {allChapters ? (
         <View style={{ marginTop: 10, alignItems: 'center' }}>
-          {/* <ProgressBar theme={{ colors: { surfaceVariant: '#DCDCDC' } }} progress={percent} color={currentBook.color} width={300} borderRadius={0}/> */}
+          {/* <ProgressBar theme={{ colors: { surfaceVariant: '#DCDCDC' } }} progress={num} color={currentBook.color} width={300} borderRadius={0}/> */}
           {textType == 'chapters' ? 
             chapterStats.remainingChapters == 1 ? <Text>last chapter</Text> : <Text>{chapterStats.remainingChapters} chapters remaining</Text>
           : (<Text>{(percent *100).toFixed(0)} %</Text>)

@@ -1,4 +1,4 @@
-import { supabase } from '../supabaseConfig.js';
+import { supabase } from '../screens/0AUTH/supabase';
 
 export async function markChapterAsListened(chapterId) {
   if (chapterId) {

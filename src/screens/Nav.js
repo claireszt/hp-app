@@ -1,37 +1,20 @@
-import 'react-native-url-polyfill/auto';
-import { useState, useEffect } from 'react';
-import { supabase } from './src/screens/0AUTH/supabase';
-import Auth from './src/screens/0AUTH/Auth';
-
-import { Session } from '@supabase/supabase-js';
-
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { View, Text } from 'react-native';
 
 import { MD3LightTheme as DefaultTheme, Provider as PaperProvider } from "react-native-paper";
-import CurrentScreen from './src/screens/1CurrentScreen/_CurrentScreen';
-import BooksScreen from './src/screens/2BooksScreen/_BooksScreen';
-import HistoryScreen from './src/screens/3HistoryScreen/HistoryScreen';
-import AccountScreen from './src/screens/4AccountScreen/AccountScreen';
+import CurrentScreen from './1CurrentScreen/_CurrentScreen';
+import BooksScreen from './2BooksScreen/_BooksScreen';
+import HistoryScreen from './3HistoryScreen/HistoryScreen';
 
-import { fetchCurrentData } from './src/functions/Fetch'
+import { fetchCurrentData } from '../functions/Fetch'
 
 const Tab = createMaterialBottomTabNavigator();
 
-export default function App() {
-  const [session, setSession] = useState(null);
+export default function Navigation({ session }) {
   const [currentBook, setCurrentBook] = useState(null);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-  }, []);
 
   async function fetchData() {
     const { currentBook } = await fetchCurrentData();
@@ -57,10 +40,8 @@ export default function App() {
 
   return (
     <NavigationContainer>
-            <PaperProvider theme={theme}>
-    {session && session.user ? 
-        (
-          <Tab.Navigator
+      <PaperProvider theme={theme}>
+        <Tab.Navigator
           activeColor="white"
           inactiveColor={inactiveColor}
           labeled={false}
@@ -93,19 +74,8 @@ export default function App() {
               ),
             }}
           />
-          <Tab.Screen
-            name="Account"
-            component={AccountScreen}
-            options={{
-              tabBarIcon: ({ color }) => (
-                <Icon name="user" color={color} size={26} />
-              ),
-            }}
-          />
         </Tab.Navigator>
-        ) : <Auth /> 
-      }
-            </PaperProvider>
-          </NavigationContainer>
-  ) 
+      </PaperProvider>
+    </NavigationContainer>
+  );
 }

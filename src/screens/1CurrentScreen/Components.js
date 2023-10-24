@@ -29,16 +29,16 @@ export function ChapterInfo({ currentChapter, nextChapter, markChapterAsListened
       <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 25, gap: 10}}>
             <View style={{ width: 300 }}><Text style={{ fontSize: 20, textAlign: 'center' }}>Chapter {currentChapter.num}: {currentChapter.title}</Text></View>
             {nextBook ? 
-              (<Icon.Button
-                name="book"
-                mode="outlined"
+              (<Button
+                icon="book"
+                mode="contained"
                 onPress={markChapterAsListened}
-                textColor={currentBook.color}
+                textColor='white'
                 uppercase={true}
-                theme={{ colors: { outline: currentBook.color } }}
-                >
+                theme={{ colors: { primary:currentBook.color, outline: currentBook.color } }}
+              >
                   NEXT BOOK
-            </Icon.Button>)
+            </Button>)
             : ( 
               <Button
                 icon="headphones"
