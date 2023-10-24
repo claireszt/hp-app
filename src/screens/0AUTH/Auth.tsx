@@ -47,8 +47,8 @@ export default function Auth() {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
       <Image source={Img['icon']} style={{ justifyContent:'center', alignContent:'center' }} />
+      <View style={[styles.verticallySpaced, styles.mt20]}>
         <TextInput
           label="Email"
           mode='outlined'
@@ -79,6 +79,7 @@ export default function Auth() {
           disabled={loading}
           onPress={() => signInWithEmail()}
           textColor='black'
+          uppercase={true}
           >
           Sign in 
         </Button>
@@ -91,13 +92,14 @@ const styles = StyleSheet.create({
   container: {
     flex:1,
     alignContent:'center',
-    justifyContent:'center'
+    justifyContent:'center',
+    alignItems:'center'
   },
   verticallySpaced: {
     paddingLeft:25,
     paddingRight:25,
     paddingBottom:5,
-    alignSelf: 'stretch',
+    alignSelf: 'stretch'
   },
   mt20: {
     marginTop: 20,

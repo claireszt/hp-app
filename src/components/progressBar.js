@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { Animated, View, Text } from 'react-native';
 import { supabase } from '../supabaseConfig.js';
 
 import { ProgressBar } from 'react-native-paper';
@@ -57,7 +57,7 @@ function ProgressBarComp({ currentBook, updateFlag, textType }) {
     <View>
       {allChapters ? (
         <View style={{ marginTop: 10, alignItems: 'center' }}>
-          {/* <ProgressBar theme={{ colors: { surfaceVariant: '#DCDCDC' } }} progress={num} color={currentBook.color} width={300} borderRadius={0}/> */}
+          <ProgressBar theme={{ colors: { surfaceVariant: '#DCDCDC' } }} animatedValue={num} color={currentBook.color} width={300} borderRadius={0}/>
           {textType == 'chapters' ? 
             chapterStats.remainingChapters == 1 ? <Text>last chapter</Text> : <Text>{chapterStats.remainingChapters} chapters remaining</Text>
           : (<Text>{(percent *100).toFixed(0)} %</Text>)

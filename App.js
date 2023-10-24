@@ -1,3 +1,5 @@
+import 'react-native-gesture-handler';
+
 import 'react-native-url-polyfill/auto';
 import { useState, useEffect } from 'react';
 import { supabase } from './src/screens/0AUTH/supabase';
