@@ -17,7 +17,7 @@ import BooksScreen from './src/screens/2BooksScreen/_BooksScreen';
 import HistoryScreen from './src/screens/3HistoryScreen/HistoryScreen';
 import AccountScreen from './src/screens/4AccountScreen/AccountScreen';
 
-import { fetchCurrentData } from './src/functions/Fetch'
+import { fetchCurrentData } from './src/utils/supabaseFunctions'
 
 const Tab = createMaterialBottomTabNavigator();
 

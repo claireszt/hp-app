@@ -1,13 +1,15 @@
-// HistoryScreen.js
-import React from 'react';
-import { View, Text, Button } from 'react-native';
 
-const HistoryScreen = ({ navigation }) => {
+import React, { useState, useEffect } from 'react';
+import { View, Text, ActivityIndicator } from 'react-native';
+import CreateTableButton, { getListenColumns } from '../../utils/currentListen.js';
+
+export default function HistoryScreen ({ navigation }) {
+
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>History Screen</Text>
+      <CreateTableButton />
     </View>
   );
 }
 
-export default HistoryScreen;
+

@@ -1,11 +1,12 @@
 import { supabase } from '../screens/0AUTH/supabase';
 
+// FETCH
 export async function fetchCurrentData() {
   const { data, error } = await supabase
     .from('history')
     .select('book(id, name, img, color), chapter(title, num, id)')
     .order('chapter', { ascending: true })
-    .is('listen-test', null)
+    .is('listen2023', null)
     .limit(2);
 
   if (error) {
@@ -22,4 +23,21 @@ export async function fetchCurrentData() {
 
   return { currentBook: null, currentChapter: null, nextChapter: null };
 }
+
+// UPDATE
+export async function markChapterAsListened(chapterId) {
+  if (chapterId) {
+    const { updateError } = await supabase
+      .from('history')
+      .update({ 'listen2023': new Date() })
+      .eq('chapter', chapterId);
+    if (updateError) {
+      console.error('Error updating the chapter:', updateError);
+    }
+  } else {
+    console.error('Chapter ID is not valid.');
+  }
+}
+
+
 

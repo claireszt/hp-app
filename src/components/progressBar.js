@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Animated, View, Text } from 'react-native';
-import { supabase } from '../supabaseConfig.js';
+import { supabase } from '../utils/supabaseConfig.js';
 
 import { ProgressBar } from 'react-native-paper';
 
 function calculateChapterStats(chaptersData) {
   const totalChapters = chaptersData.length;
-  const listenedChapters = chaptersData.filter((chapter) => chapter['listen-test'] !== null).length;
+  const listenedChapters = chaptersData.filter((chapter) => chapter['listen2023'] !== null).length;
   const remainingChapters = totalChapters - listenedChapters;
 
   return {
@@ -18,7 +18,7 @@ function calculateChapterStats(chaptersData) {
 
 function calcPercent(chaptersData) {
   const totalChapters = chaptersData.length;
-  const listenedChapters = chaptersData.filter((chapter) => chapter['listen-test'] !== null).length;
+  const listenedChapters = chaptersData.filter((chapter) => chapter['listen2023'] !== null).length;
   const percentageListened = (listenedChapters / totalChapters);
 
   return percentageListened;
@@ -31,7 +31,7 @@ function ProgressBarComp({ currentBook, updateFlag, textType }) {
     async function fetchAllBookChapters() {
       const { data, error } = await supabase
         .from('history')
-        .select('chapter, listen-test', { count: 'exact' })
+        .select('chapter, listen2023', { count: 'exact' })
         .order('chapter', { ascending: true })
         .filter('book', 'eq', currentBook.id);
 

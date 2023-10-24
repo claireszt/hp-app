@@ -9,9 +9,8 @@ import CurrentStyle from './Style.js'
 import { ActivityIndicator, MD2Colors } from 'react-native-paper';
 
 // FUNCTIONS
-import { fetchCurrentData } from '../../functions/Fetch.js'; 
-import { markChapterAsListened } from '../../functions/Update.js';
-
+import { fetchCurrentData, markChapterAsListened } from '../../utils/supabaseFunctions.js'; 
+import CreateTableButton from '../../utils/currentListen.js';
 
 function CurrentScreen() {
   const [currentBook, setCurrentBook] = useState(null);

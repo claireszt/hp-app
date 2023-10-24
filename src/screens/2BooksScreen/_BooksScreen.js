@@ -8,7 +8,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Img from '../../utils/images.js'
 import ProgressBarComp from '../../components/progressBar.js';
 
-import { supabase } from '../../supabaseConfig.js';
+import { supabase } from '../../utils/supabaseConfig.js';
 
 import { BookPage } from './bookpage.js';
 
@@ -40,20 +40,20 @@ const BooksScreen = () => {
 
 
     return (
-      // <Stack.Navigator>
-      // <Stack.Screen name="Home" component={BookPage} />
-      // </Stack.Navigator>
+      <View>
 
-      <View style={{ flex: 1, marginTop: 50, justifyContent: 'center' }}>
-        <Divider style={{ marginTop: 20, marginBottom: 20 }} />
-        {bookData.map((book) => (
-          <View key={book.id}> 
-            <Text variant="titleLarge" style={{ textAlign: 'center' }}>{book.name}</Text>
-            <ProgressBarComp currentBook={book} textType={'percent'} />
-            <Divider style={{ marginTop: 20, marginBottom: 20 }} />
-          </View>
-        ))}
       </View>
+
+      // <View style={{ flex: 1, marginTop: 50, justifyContent: 'center' }}>
+      //   <Divider style={{ marginTop: 20, marginBottom: 20 }} />
+      //   {bookData.map((book) => (
+      //     <View key={book.id}> 
+      //       <Text variant="titleLarge" style={{ textAlign: 'center' }}>{book.name}</Text>
+      //       <ProgressBarComp currentBook={book} textType={'percent'} />
+      //       <Divider style={{ marginTop: 20, marginBottom: 20 }} />
+      //     </View>
+      //   ))}
+      // </View>
     );
 }
 
