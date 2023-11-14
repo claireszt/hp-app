@@ -1,60 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import { View } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { View, Text } from "react-native";
+import { Button, ActivityIndicator } from "react-native-paper";
+import {
+  newFetchCurrentData,
+  newMarkChapterAsListened,
+} from "../NEWDB/supabaseFunctions";
 
-// CURRENT SCREEN
-import { BookInfo, ChapterInfo } from './Components.js';
-
-// STYLE
-import CurrentStyle from './Style.js'
-import { ActivityIndicator, MD2Colors } from 'react-native-paper';
-
-// FUNCTIONS
-import { fetchCurrentData, markChapterAsListened } from '../../utils/supabaseFunctions.js'; 
-import CreateTableButton from '../../utils/currentListen.js';
-
-function CurrentScreen() {
+export const NewCurrentScreen = () => {
   const [currentBook, setCurrentBook] = useState(null);
   const [currentChapter, setCurrentChapter] = useState(null);
   const [nextChapter, setNextChapter] = useState(null);
-  const [updateFlag, setUpdateFlag] = useState(true);
+  const [forceUpdate, setForceUpdate] = useState(false); // État intermédiaire pour forcer le rendu
 
   useEffect(() => {
     async function fetchData() {
-      const { currentBook, currentChapter, nextChapter } = await fetchCurrentData();
+      const { currentBook, currentChapter, nextChapter } = await newFetchCurrentData();
       setCurrentBook(currentBook);
       setCurrentChapter(currentChapter);
       setNextChapter(nextChapter);
     }
 
     fetchData();
-  }, [updateFlag]);
-
-  const chaptBtn = async () => {
-    if (currentChapter) {
-      markChapterAsListened(currentChapter.id); 
-      setUpdateFlag(!updateFlag)
-    }
-  }
+    console.log(forceUpdate)
+  }, [forceUpdate]);
 
   const isLoading = !(currentBook && currentChapter && nextChapter);
 
+  const chaptBtn = async () => {
+    try {
+      await newMarkChapterAsListened(currentChapter.id);
+      setForceUpdate(!forceUpdate); // Met à jour l'état intermédiaire pour forcer le rendu
+      console.log('current screen updated');
+    } catch (error) {
+      console.error('Error marking chapter as listened:', error);
+    }
+  };
+
   return (
-    <View style={CurrentStyle.container}>
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       {isLoading ? (
-        <ActivityIndicator animating={true} color={'black'} />
+        <ActivityIndicator animating={true} color={"black"} />
       ) : (
         <>
-          <BookInfo currentBook={currentBook} updateFlag={updateFlag} />
-          <ChapterInfo
-            currentChapter={currentChapter}
-            nextChapter={nextChapter}
-            markChapterAsListened={chaptBtn}
-            currentBook={currentBook}
-          />
+          <Text style={{ textAlign: "center" }}>{currentBook.name}</Text>
+          <Text style={{ textAlign: "center", marginBottom: 10 }}>
+            {currentChapter.id} : {currentChapter.title}
+          </Text>
+          <Button icon="headphones" mode="contained" onPress={chaptBtn}>
+            Listened
+          </Button>
         </>
       )}
     </View>
   );
-}
-
-export default CurrentScreen;
+};

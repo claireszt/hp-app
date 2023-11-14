@@ -5,33 +5,27 @@ import { supabase } from '../utils/supabaseConfig.js';
 import { ProgressBar } from 'react-native-paper';
 
 function calculateChapterStats(chaptersData) {
-  const totalChapters = chaptersData.length;
-  const listenedChapters = chaptersData.filter((chapter) => chapter['listen2023'] !== null).length;
+  const totalChapters = chaptersData ? chaptersData.length : 0;
+  const lastChapt = chaptersData[totalChapters-1]
+  const listenedChapters = (chaptersData ?? []).filter((chapter) => chapter['listen_count'] > lastChapt['listen_count']).length;
   const remainingChapters = totalChapters - listenedChapters;
+  const percentageListened = (listenedChapters / totalChapters) * 100;
 
   return {
     totalChapters,
     listenedChapters,
     remainingChapters,
+    percentageListened
   };
 }
 
-function calcPercent(chaptersData) {
-  const totalChapters = chaptersData.length;
-  const listenedChapters = chaptersData.filter((chapter) => chapter['listen2023'] !== null).length;
-  const percentageListened = (listenedChapters / totalChapters);
-
-  return percentageListened;
-}
-
-function ProgressBarComp({ currentBook, updateFlag, textType }) {
+function ProgressBarComp({ currentBook, textType }) {
   const [allChapters, setAllChapters] = useState([]);
 
-  useEffect(() => {
     async function fetchAllBookChapters() {
       const { data, error } = await supabase
-        .from('history')
-        .select('chapter, listen2023', { count: 'exact' })
+        .from('history_new')
+        .select('chapter, listen_count')
         .order('chapter', { ascending: true })
         .filter('book', 'eq', currentBook.id);
 
@@ -43,29 +37,27 @@ function ProgressBarComp({ currentBook, updateFlag, textType }) {
     }
 
     fetchAllBookChapters();
-  }, [updateFlag]);
 
+  const chapterStats = calculateChapterStats(allChapters)
 
-
-  const chapterStats = calculateChapterStats(allChapters);
-  const percent = calcPercent(allChapters);
-
-  let num = 0
-  if (currentBook) { num = percent}
+  const percent = allChapters ? chapterStats.percentageListened / 100 : 0;
 
   return (
-    <View>
-      {allChapters ? (
-        <View style={{ marginTop: 10, alignItems: 'center' }}>
-          <ProgressBar theme={{ colors: { surfaceVariant: '#DCDCDC' } }} animatedValue={num} color={currentBook.color} width={300} borderRadius={0}/>
-          {textType == 'chapters' ? 
-            chapterStats.remainingChapters == 1 ? <Text>last chapter</Text> : <Text>{chapterStats.remainingChapters} chapters remaining</Text>
-          : (<Text>{(percent *100).toFixed(0)} %</Text>)
-          }
-          </View>
-      ) : (
-        <View></View>
-      )}
+    <View style={{ marginTop: 10, alignItems: 'center' }}>
+    {allChapters ? (
+        <View>
+          <ProgressBar theme={{ colors: { surfaceVariant: '#DCDCDC' } }} animatedValue={percent} color={currentBook.color} width={300} borderRadius={0} />
+          {textType == "chapters" ? (
+            chapterStats.remainingChapters === 1 ? (
+              <Text>last chapter</Text>
+            ) : (
+              <Text>{chapterStats.remainingChapters} chapters remaining</Text>
+            )
+          ) : (
+            <Text>{Math.floor(chapterStats.percentageListened)} %</Text>
+          )}
+        </View>
+      ) : null}
     </View>
   );
 }

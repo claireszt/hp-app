@@ -3,32 +3,11 @@ import { supabase } from "../screens/0AUTH/supabase";
 import React, { useState, useEffect } from 'react';
 import { View, Button } from 'react-native';
 
+import { getLastListenColumn } from "./supabaseFunctions";
+
 const CreateTableButton = () => {
   const [currentListenColumn, setCurrentListenColumn] = useState(null);
   const [nextListenColumn, setNextListenColumn] = useState(null);
-
-  const getListenColumns = async () => {
-    const { data, error } = await supabase.rpc('get_columns', {
-      tname: 'history',
-    });
-
-    if (error) {
-      console.error('Error fetching column names:', error);
-      return [];
-    } else {
-      const columnNames = data.map((item) => item.column_name);
-      return columnNames;
-    }
-  };
-
-  const getLastListenColumn = async () => {
-    const columns = await getListenColumns();
-    if (columns.length > 0) {
-      return columns[columns.length - 1];
-    } else {
-      return null;
-    }
-  };
 
   useEffect(() => {
     getLastListenColumn().then((lastColumn) => {

@@ -1,60 +1,101 @@
-// BooksScreen.js
-import React, { useState, useEffect } from 'react';
-import { ScrollView, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { List } from 'react-native-paper';
+import { fetchAllBooks, fetchBookChapters } from '../NEWDB/supabaseFunctions';
 
-import { Avatar, Button, Card, Text, Divider } from 'react-native-paper';
-import { createStackNavigator } from '@react-navigation/stack';
-
-import Img from '../../utils/images.js'
-import ProgressBarComp from '../../components/progressBar.js';
-
-import { supabase } from '../../utils/supabaseConfig.js';
-
-import { BookPage } from './bookpage.js';
-
-const Stack = createStackNavigator();
+// ... Importations et autres codes ...
 
 const BooksScreen = () => {
-  const [bookData, setBookData] = useState([]);
-  const [expanded, setExpanded] = useState(true)
+  const [books, setBooks] = useState([]);
+  const [error, setError] = useState(null);
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [chapters, setChapters] = useState([]);
+  const [expandedBookId, setExpandedBookId] = useState(null);
 
-  const handlePress = () => setExpanded(!expanded)
+  async function fetchBooks() {
+    try {
+      const fetchedBooks = await fetchAllBooks();
+      setBooks(fetchedBooks);
+    } catch (error) {
+      console.error('Une erreur est survenue dans votre noble quête:', error);
+      setError('Une erreur est survenue lors de la quête des livres. Veuillez réessayer plus tard.');
+    }
+  }
 
-    useEffect(() => {
-      // Obtenir les données de la table "books" depuis Supabase
-      async function fetchBookData() {
-        const { data, error } = await supabase
-          .from('books')
-          .select()
-          .order('id', { ascending: true })
-          ;
+  const handleBookPress = async (book) => {
+    try {
+      const newExpandedBookId = expandedBookId === book.id ? null : book.id;
+      setSelectedBook(book);
+      setChapters(await fetchBookChapters(book.id));
+      setExpandedBookId(newExpandedBookId);
+    } catch (error) {
+      console.error('Une erreur est survenue lors de la récupération des chapitres:', error);
+    }
+  };
 
-        if (error) {
-          console.error('Error fetching book data:', error);
-        } else {
-          setBookData(data);
-        }
-      }
-      fetchBookData();
-    }, []);
+  useEffect(() => {
+    fetchBooks();
+  }, []);
 
-
-    return (
-      <View>
-
+  return (
+    <ScrollView contentContainerStyle={styles.scrollViewContent}>
+      <View style={styles.container}>
+        <Text style={styles.header}>Livres majestueux de la bibliothèque royale :</Text>
+        {error && (
+          <Text style={styles.error}>{error}</Text>
+        )}
+        {!error && (
+          <List.Section>
+            {books.map((book) => (
+              <List.Accordion
+                key={book.id}
+                title={book.name}
+                style={styles.bookAccordion}
+                expanded={expandedBookId === book.id}
+                onPress={() => handleBookPress(book)}
+              >
+                {chapters.map((chapter) => (
+                  <List.Item
+                    key={chapter.id}
+                    title={`Chapter ${chapter.num}: ${chapter.title}`}
+                    description={chapter.summary}
+                  />
+                ))}
+              </List.Accordion>
+            ))}
+          </List.Section>
+        )}
       </View>
+    </ScrollView>
+  );
+};
 
-      // <View style={{ flex: 1, marginTop: 50, justifyContent: 'center' }}>
-      //   <Divider style={{ marginTop: 20, marginBottom: 20 }} />
-      //   {bookData.map((book) => (
-      //     <View key={book.id}> 
-      //       <Text variant="titleLarge" style={{ textAlign: 'center' }}>{book.name}</Text>
-      //       <ProgressBarComp currentBook={book} textType={'percent'} />
-      //       <Divider style={{ marginTop: 20, marginBottom: 20 }} />
-      //     </View>
-      //   ))}
-      // </View>
-    );
-}
-
+const styles = StyleSheet.create({
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 16,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+  },
+  header: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  bookAccordion: {
+    width: 400,
+    marginBottom: 8,
+  },
+  error: {
+    color: 'red',
+    fontSize: 16,
+    marginTop: 16,
+  },
+});
 export default BooksScreen;

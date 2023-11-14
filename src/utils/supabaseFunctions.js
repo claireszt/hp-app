@@ -1,12 +1,44 @@
 import { supabase } from '../screens/0AUTH/supabase';
 
+// COLUMNS
+
+const getListenColumns = async () => {
+  const { data, error } = await supabase.rpc('get_columns', {
+    tname: 'history',
+  });
+
+  if (error) {
+    console.error('Error fetching column names:', error);
+    return [];
+  } else {
+    const columnNames = data.map((item) => item.column_name);
+    return columnNames;
+  }
+};
+
+export const getLastListenColumn = async () => {
+  const columns = await getListenColumns();
+  if (columns.length > 0) {
+    return columns[columns.length - 1];
+  } else {
+    return null;
+  }
+};
+
 // FETCH
 export async function fetchCurrentData() {
+  const lastListenColumn = await getLastListenColumn();
+
+  if (!lastListenColumn) {
+    console.error('No listening column found.');
+    return { currentBook: null, currentChapter: null, nextChapter: null };
+  }
+
   const { data, error } = await supabase
     .from('history')
     .select('book(id, name, img, color), chapter(title, num, id)')
     .order('chapter', { ascending: true })
-    .is('listen2023', null)
+    .is(lastListenColumn, null)
     .limit(2);
 
   if (error) {
@@ -26,6 +58,7 @@ export async function fetchCurrentData() {
 
 // UPDATE
 export async function markChapterAsListened(chapterId) {
+  
   if (chapterId) {
     const { updateError } = await supabase
       .from('history')
@@ -38,6 +71,3 @@ export async function markChapterAsListened(chapterId) {
     console.error('Chapter ID is not valid.');
   }
 }
-
-
-
